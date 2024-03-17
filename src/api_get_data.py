@@ -40,30 +40,18 @@ response = requests.get(url, params=params)
 
 # Check if the request was successful
 if response.status_code == 200:
-    # Open a CSV file for writing
-    with open("../data/electric_stations.csv", "w", newline="", encoding="utf-8") as csvfile:
-        csv_writer = csv.writer(csvfile)
-
-        # Write data rows
-        lines = response.text.strip().split("\n")
-        for line_number, line in enumerate(lines):
-            # Filter out empty or incorrectly formatted lines
-            if line_number == 0:
-                # Write the first line (headers)
-                csv_writer.writerow(line.split(","))
-                expected_fields = len(line.split(","))
-            elif line.count(",") == expected_fields - 1:
-                # Write lines with the correct number of fields
-                csv_writer.writerow(line.split(","))
-            else:
-                write_to_log(f"Line {line_number + 1} has an incorrect number of fields: {line}")
-
-    # Delete rows with more fields than expected
-    delete_invalid_rows("../data/electric_stations.csv", expected_fields)
+    # Write the response content to a CSV file
+    with open("electric_stations.csv", "w", encoding="utf-8") as csv_file:
+        csv_file.write(response.text)
 
     print("Data stored in electric_stations.csv")
     write_to_log("API request completed successfully")
+
+    # Perform additional operations if needed
+    # For example, deleting invalid rows
+    delete_invalid_rows("electric_stations.csv", 77)
 else:
     print(f"Error fetching data: {response.status_code}")
     print("Error message:", response.text)
     write_to_log(f"Error fetching data: {response.status_code}. Error message: {response.text}")
+
