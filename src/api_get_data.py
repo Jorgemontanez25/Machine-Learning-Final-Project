@@ -1,4 +1,5 @@
 import csv
+import os
 import datetime
 import requests
 
@@ -40,18 +41,24 @@ response = requests.get(url, params=params)
 
 # Check if the request was successful
 if response.status_code == 200:
-    # Write the response content to a CSV file
-    with open("electric_stations.csv", "w", encoding="utf-8") as csv_file:
+    # Define the directory to save the files
+    directory = '/workspaces/Machine-Learning-Final-Project/data/raw'
+    os.makedirs(directory, exist_ok=True)
+
+    # Write the response content to a CSV file in the specified directory
+    csv_file_path = os.path.join(directory, "electric_stations.csv")
+    with open(csv_file_path, "w", encoding="utf-8") as csv_file:
         csv_file.write(response.text)
 
-    print("Data stored in electric_stations.csv")
+    print(f"Data stored in {csv_file_path}")
     write_to_log("API request completed successfully")
 
     # Perform additional operations if needed
     # For example, deleting invalid rows
-    delete_invalid_rows("electric_stations.csv", 77)
+    delete_invalid_rows(csv_file_path, 77)
 else:
     print(f"Error fetching data: {response.status_code}")
     print("Error message:", response.text)
     write_to_log(f"Error fetching data: {response.status_code}. Error message: {response.text}")
+
 

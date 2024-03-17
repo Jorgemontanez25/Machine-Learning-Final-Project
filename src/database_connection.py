@@ -3,16 +3,16 @@ import requests
 from sqlalchemy import Column, Integer, String, create_engine, Table, MetaData
 from sqlalchemy.sql import text
 
+
 # Define the database connection
-engine = create_engine('sqlite:///../data/my_database.db')
+engine = create_engine('sqlite:///my_database.db')
 
 # Define the metadata
 metadata = MetaData()
 
 # Define the table structure
-my_table = Table('my_table', metadata,
+my_table = Table('charge_stations', metadata,
                  # Define your table columns here
-                 Column('id', Integer, primary_key=True),
                  Column('fuel_type_code', String),
                  Column('station_name', String),
                  Column('street_address', String),
@@ -40,7 +40,7 @@ my_table = Table('my_table', metadata,
                  Column('latitude', String),
                  Column('longitude', String),
                  Column('date_last_confirmed', String),
-                 Column('station_id', String),
+                 Column('station_id', String, primary_key=True),
                  Column('updated_at', String),
                  Column('owner_type_code', String),
                  Column('federal_agency_id', String),
@@ -87,34 +87,21 @@ my_table = Table('my_table', metadata,
                  Column('lng_station_sells_renewable_natural_gas', String),
                  Column('maximum_vehicle_class', String),
                  Column('ev_workplace_charging', String)
-                 )
+                )
 
+# Define the API endpoint
+api_url = '/workspaces/Machine-Learning-Final-Project/electric_stations.csv'
 
-# API URL
-url = "https://developer.nrel.gov/api/alt-fuel-stations/v1.csv"
-
-# Request parameters
-params = {
-    "api_key": "ispXZf0PCuTvLlS4U4heX8t1XxLsfrbq9gKxjcUJ",  # Replace with your API key
-    "fuel_type": "ELEC",  # Filter by electric stations
-    "country": "US",
-    "limit": "all"  # Get all results
- }
-
-# Make the API request
-response = requests.get(url, params=params)
-
-# Check if the request was successful
+# Fetch data from the API
+response = requests.get(api_url)
 
 if response.status_code == 200:
-    # Parse CSV response
-    data = response.text
+    # Parse JSON response
+    data = response.json()
     
-    # Parse CSV and insert data into the database
+    # Bulk insert data into the database
     with engine.connect() as connection:
-        csv_reader = csv.DictReader(data.splitlines())
-        entries = [{column: row[column] for column in my_table.columns.keys()} for row in csv_reader]
-        insert_statement = my_table.insert().values(entries)
-        connection.execute(insert_statement)
+        # Bulk insert data into the database
+        connection.execute(my_table.insert(), data)
 else:
     print('Error: Failed to fetch data from API')
