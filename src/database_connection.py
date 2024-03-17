@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, create_engine, Table, MetaData
 from sqlalchemy.sql import text
 
 # Define the database connection
-engine = create_engine('sqlite:///my_database.db')
+engine = create_engine('sqlite:///../data/my_database.db')
 
 # Define the metadata
 metadata = MetaData()
