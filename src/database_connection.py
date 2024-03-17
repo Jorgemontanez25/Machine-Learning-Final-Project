@@ -1,11 +1,8 @@
 import csv
-import requests
-from sqlalchemy import Column, Integer, String, create_engine, Table, MetaData
-from sqlalchemy.sql import text
-
+from sqlalchemy import create_engine, Table, MetaData, Column, String, Integer
 
 # Define the database connection
-engine = create_engine('sqlite:///my_database.db')
+engine = create_engine('sqlite:////workspaces/Machine-Learning-Final-Project/data/raw/my_database.db')
 
 # Define the metadata
 metadata = MetaData()
@@ -40,7 +37,7 @@ my_table = Table('charge_stations', metadata,
                  Column('latitude', String),
                  Column('longitude', String),
                  Column('date_last_confirmed', String),
-                 Column('station_id', String, primary_key=True),
+                 Column('station_id', Integer, primary_key=True, autoincrement=True),
                  Column('updated_at', String),
                  Column('owner_type_code', String),
                  Column('federal_agency_id', String),
@@ -89,19 +86,18 @@ my_table = Table('charge_stations', metadata,
                  Column('ev_workplace_charging', String)
                 )
 
-# Define the API endpoint
-api_url = '/workspaces/Machine-Learning-Final-Project/electric_stations.csv'
+# Create the table
+metadata.create_all(engine)
 
-# Fetch data from the API
-response = requests.get(api_url)
+# Define the CSV file path
+csv_file_path = '/workspaces/Machine-Learning-Final-Project/data/raw/electric_stations.csv'
 
-if response.status_code == 200:
-    # Parse JSON response
-    data = response.json()
-    
+# Read data from CSV file
+with open(csv_file_path, 'r', encoding='utf-8') as file:
+    csv_reader = csv.DictReader(file)
+    data = [row for row in csv_reader]
+
+# Bulk insert data into the database
+with engine.connect() as connection:
     # Bulk insert data into the database
-    with engine.connect() as connection:
-        # Bulk insert data into the database
-        connection.execute(my_table.insert(), data)
-else:
-    print('Error: Failed to fetch data from API')
+    connection.execute(my_table.insert(), data)
