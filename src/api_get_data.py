@@ -10,7 +10,7 @@ def write_to_log(message):
 # Function to delete rows with more fields than expected from a CSV file
 def delete_invalid_rows(csv_file, expected_fields):
     # Read the contents of the CSV file into a list of lists
-    with open(csv_file, 'r', newline='') as file:
+    with open(csv_file, 'r', newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
         rows = list(reader)
 
@@ -18,7 +18,7 @@ def delete_invalid_rows(csv_file, expected_fields):
     valid_rows = [row for row in rows if len(row) == expected_fields]
 
     # Write the valid rows back to the CSV file
-    with open(csv_file, 'w', newline='') as file:
+    with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerows(valid_rows)
 
