@@ -1,6 +1,6 @@
 __pycache__
 .env
 .learn
-data/*
+data/my_database2.db
 
 
