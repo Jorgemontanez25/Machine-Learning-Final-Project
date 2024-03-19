@@ -1,7 +1,7 @@
 #Esto es una prueba de control de versiones. Marzo 17, 17:49pm MX
-import os
-import datetime
-import requests
+import csv, os, datetime, requests
+from dotenv import load_dotenv
+load_dotenv()
 
 # Function to write to the log file
 def write_to_log(message):
@@ -29,9 +29,10 @@ def delete_invalid_rows(csv_file, expected_fields):
 # API URL
 url = "https://developer.nrel.gov/api/alt-fuel-stations/v1.csv"
 
+
 # Request parameters
 params = {
-    "api_key": "ispXZf0PCuTvLlS4U4heX8t1XxLsfrbq9gKxjcUJ",  # Replace with your API key
+    "api_key": os.environ['API_KEY'],  # Replace your API key on .env
     "fuel_type": "ELEC",  # Filter by electric stations
     "country": "US",
     "limit": "all"  # Get all results
