@@ -1,22 +1,26 @@
 import os
 import csv
 import requests
-from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy import Column, Integer, Numeric, Float, String, Date, DateTime, Boolean, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+from datetime import datetime
+from dotenv import load_dotenv
+load_dotenv()
+
 
 Base = declarative_base()
 
 class Station(Base):
-    __tablename__ = 'stations'
+    __tablename__ = 'station'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=False)
     fuel_type_code = Column(String)
     station_name = Column(String)
     street_address = Column(String)
     intersection_directions = Column(String)
     city = Column(String)
     state = Column(String)
-    zip_code = Column(String)
+    zip_code = Column(Integer)
     plus4 = Column(String)
     station_phone = Column(String)
     status_code = Column(String)
@@ -27,17 +31,16 @@ class Station(Base):
     bd_blends = Column(String)
     ng_fill_type_code = Column(String)
     ng_psi = Column(String)
-    ev_level1_evse_num = Column(String)
-    ev_level2_evse_num = Column(String)
-    ev_dc_fast_count = Column(String)
+    ev_level1_evse_num = Column(Integer)
+    ev_level2_evse_num = Column(Integer)
+    ev_dc_fast_count = Column(Integer)
     ev_other_info = Column(String)
     ev_network = Column(String)
     ev_network_web = Column(String)
     geocode_status = Column(String)
-    latitude = Column(String)
-    longitude = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
     date_last_confirmed = Column(String)
-    station_id = Column(String)
     updated_at = Column(String)
     owner_type_code = Column(String)
     federal_agency_id = Column(String)
@@ -58,10 +61,10 @@ class Station(Base):
     access_detail_code = Column(String)
     federal_agency_code = Column(String)
     facility_type = Column(String)
-    cng_dispenser_num = Column(String)
+    cng_dispenser_num = Column(Integer)
     cng_onsite_renewable_source = Column(String)
-    cng_total_compression_capacity = Column(String)
-    cng_storage_capacity = Column(String)
+    cng_total_compression_capacity = Column(Integer)
+    cng_storage_capacity = Column(Integer)
     lng_onsite_renewable_source = Column(String)
     e85_other_ethanol_blends = Column(String)
     ev_pricing = Column(String)
@@ -74,7 +77,7 @@ class Station(Base):
     cng_vehicle_class = Column(String)
     lng_vehicle_class = Column(String)
     ev_onsite_renewable_source = Column(String)
-    restricted_access = Column(String)
+    restricted_access = Column(Boolean)
     rd_blends = Column(String)
     rd_blends_french = Column(String)
     rd_blended_with_biodiesel = Column(String)
@@ -83,7 +86,7 @@ class Station(Base):
     cng_station_sells_renewable_natural_gas = Column(String)
     lng_station_sells_renewable_natural_gas = Column(String)
     maximum_vehicle_class = Column(String)
-    ev_workplace_charging = Column(String)
+    ev_workplace_charging = Column(Boolean)
 
     def __repr__(self):
         return f"Station(id={self.id}, name='{self.station_name}')"
@@ -101,6 +104,9 @@ if not os.path.exists(data_dir):
 # Construir la ruta completa al archivo de la base de datos
 db_path = os.path.join(data_dir, 'my_database2.db')
 
+if os.path.exists(db_path):
+    os.remove(db_path)
+
 # Crear el archivo de la base de datos si no existe
 if not os.path.exists(db_path):
     open(db_path, 'a').close()
@@ -115,7 +121,7 @@ url = "https://developer.nrel.gov/api/alt-fuel-stations/v1.csv"
 
 # Parámetros de la solicitud
 params = {
-    "api_key": "ispXZf0PCuTvLlS4U4heX8t1XxLsfrbq9gKxjcUJ",
+    "api_key": os.environ['API_KEY'],  # Replace your API key on .env,
     "fuel_type": "ELEC",  # Filtra por estaciones eléctricas
     "country": "US",
     "limit": "all"  # Obtiene todos los resultados
@@ -126,6 +132,9 @@ response = requests.get(url, params=params)
 
 # Comprobamos si la solicitud fue exitosa
 if response.status_code == 200:
+
+
+
     # Parseamos la respuesta CSV
     csv_data = response.text
 
@@ -161,10 +170,10 @@ if response.status_code == 200:
             ev_network=row['EV Network'],
             ev_network_web=row['EV Network Web'],
             geocode_status=row['Geocode Status'],
-            latitude=row['Latitude'],
-            longitude=row['Longitude'],
+            latitude=float(row['Latitude']),
+            longitude=float(row['Longitude']),
             date_last_confirmed=row['Date Last Confirmed'],
-            station_id=row['ID'],
+            id=int(row['ID']),
             updated_at=row['Updated At'],
             owner_type_code=row['Owner Type Code'],
             federal_agency_id=row['Federal Agency ID'],
@@ -201,7 +210,7 @@ if response.status_code == 200:
             cng_vehicle_class=row['CNG Vehicle Class'],
             lng_vehicle_class=row['LNG Vehicle Class'],
             ev_onsite_renewable_source=row['EV On-Site Renewable Source'],
-            restricted_access=row['Restricted Access'],
+            restricted_access=bool(row['Restricted Access']),
             rd_blends=row['RD Blends'],
             rd_blends_french=row['RD Blends (French)'],
             rd_blended_with_biodiesel=row['RD Blended with Biodiesel'],
@@ -210,7 +219,7 @@ if response.status_code == 200:
             cng_station_sells_renewable_natural_gas=row['CNG Station Sells Renewable Natural Gas'],
             lng_station_sells_renewable_natural_gas=row['LNG Station Sells Renewable Natural Gas'],
             maximum_vehicle_class=row['Maximum Vehicle Class'],
-            ev_workplace_charging=row['EV Workplace Charging']
+            ev_workplace_charging=bool(row['EV Workplace Charging'])
         )
 
         # Agregamos la nueva estación a la sesión
