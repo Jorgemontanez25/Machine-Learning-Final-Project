@@ -2,4 +2,3 @@ __pycache__
 .env
 .learn
 data/my_database2.db
-data/raw/electric_stations.csv
