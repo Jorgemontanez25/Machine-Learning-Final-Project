@@ -104,7 +104,8 @@ if not os.path.exists(data_dir):
 # Construir la ruta completa al archivo de la base de datos
 db_path = os.path.join(data_dir, 'my_database2.db')
 
-os.remove(db_path)
+if os.path.exists(db_path):
+    os.remove(db_path)
 
 # Crear el archivo de la base de datos si no existe
 if not os.path.exists(db_path):
