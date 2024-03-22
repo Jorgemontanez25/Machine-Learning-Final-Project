@@ -1,4 +1,3 @@
-#Esto es una prueba de control de versiones. Marzo 17, 17:49pm MX
 import csv, os, datetime, requests
 from dotenv import load_dotenv
 load_dotenv()
