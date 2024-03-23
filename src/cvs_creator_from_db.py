@@ -31,15 +31,16 @@ for table_name in tables:
     
     # Check if the table is 'station'
     if table_name == 'station':
-        # Define raw SQL query to select all columns and the count of stations grouped by state
-        query = text(f"SELECT *, (SELECT COUNT(*) FROM {table_name} AS s WHERE s.state = {table_name}.state) AS number_of_stations FROM {table_name}")
+        # Define raw SQL query to select the state and the count of stations grouped by state
+        query = text(f"SELECT state, COUNT(*) as number_of_stations FROM {table_name} GROUP BY state")
     else:
         # Define raw SQL query to select all columns from the table
         query = text(f"SELECT * FROM {table_name}")
     
     result = conn.execute(query)
     
-    # Fetch all rows into a DataFrame    df = pd.DataFrame(result.fetchall(), columns=result.keys())
+    # Fetch all rows into a DataFrame
+    df = pd.DataFrame(result.fetchall(), columns=result.keys())
     
     # Define CSV file path
     csv_file_path = os.path.join(csv_dir, f'{table_name}.csv')
@@ -53,6 +54,3 @@ for table_name in tables:
     conn.close()
 
 print("CSV files created successfully!")
-
-
-
