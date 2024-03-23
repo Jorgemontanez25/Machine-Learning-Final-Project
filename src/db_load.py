@@ -1,12 +1,16 @@
 import os
 import csv
+import json
 import requests
 from sqlalchemy import Column, Integer, Numeric, Float, String, Date, DateTime, Boolean, create_engine
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 from dotenv import load_dotenv
-load_dotenv()
 
+
+load_dotenv()
 
 Base = declarative_base()
 
@@ -19,7 +23,7 @@ class Station(Base):
     street_address = Column(String)
     intersection_directions = Column(String)
     city = Column(String)
-    state = Column(String)
+    state= Column(String, ForeignKey("state.abbreviation"))
     zip_code = Column(Integer)
     plus4 = Column(String)
     station_phone = Column(String)
@@ -87,9 +91,34 @@ class Station(Base):
     lng_station_sells_renewable_natural_gas = Column(String)
     maximum_vehicle_class = Column(String)
     ev_workplace_charging = Column(Boolean)
+    states = relationship("State")
 
     def __repr__(self):
         return f"Station(id={self.id}, name='{self.station_name}')"
+
+
+class State(Base):
+    __tablename__ = 'state'
+
+    name = Column(String, primary_key= True, autoincrement=False)
+    abbreviation = Column(String)
+    
+
+class Vehicle(Base):
+    __tablename__ = 'vehicle'
+
+    id = Column(Integer, primary_key= True)
+    state_name= Column(String, ForeignKey("state.name"))
+    state = relationship("State")
+    electric = Column(Integer)
+
+class Area(Base):   
+    __tablename__ = 'area'
+
+    id = Column(Integer, primary_key= True)
+    state_name= Column(String, ForeignKey("state.name"))
+    state = relationship("State")
+    area = Column(Integer)
 
 # Obtener la ruta de la carpeta 'src'
 src_dir = os.path.dirname(os.path.abspath(__file__))
@@ -133,20 +162,37 @@ response = requests.get(url, params=params)
 # Comprobamos si la solicitud fue exitosa
 if response.status_code == 200:
 
-
-
     # Parseamos la respuesta CSV
     csv_data = response.text
 
     # Creamos una sesión de base de datos
     session = DBSession()
 
+    with open(os.path.join(data_dir, 'raw/states_titlecase.json')) as file:
+
+        json_data = file.read()  # Leer el contenido del archivo como texto
+        states = json.loads(json_data)
+        file.close()
+
+        for row in states:
+            state =State(
+                name = row['name'],
+                abbreviation = row['abbreviation']
+            )
+
+            # Agregamos la nueva estación a la sesión
+            session.add(state)
+
+        # Confirmamos los cambios en la base de datos
+        session.commit()
+
+
     # Iteramos sobre cada fila de la respuesta CSV
     csv_reader = csv.DictReader(csv_data.splitlines())
     for row in csv_reader:
         # Creamos una nueva instancia del modelo Station
         station = Station(
-            fuel_type_code=row['Fuel Type Code'],
+            fuel_type_code = row['Fuel Type Code'],
             station_name=row['Station Name'],
             street_address=row['Street Address'],
             intersection_directions=row['Intersection Directions'],
@@ -227,6 +273,65 @@ if response.status_code == 200:
 
     # Confirmamos los cambios en la base de datos
     session.commit()
+
+
+    
+    csv_vehicle_path = os.path.join(data_dir, 'raw/Electric_vehicles_by_state.csv')
+
+    csv_area_path = os.path.join(data_dir, 'raw/States_Areas.csv')
+
+
+    with open(csv_vehicle_path, mode='r') as archivo:
+        csv_reader_vehicle = csv.DictReader(archivo)
+
+        for row in csv_reader_vehicle:
+            # Creamos una nueva instancia del modelo Vehicle
+
+            electric_vh = row['electric'].replace(",", "")
+            vehicle = Vehicle(
+                state_name= row['state'],
+                electric = electric_vh
+            )
+
+            # Detener el bucle en la fila 'x'
+            if row['state'] == 'United States':  # Reemplaza 'x' con el número de la última fila que deseas leer
+                
+                break
+
+            # Agregamos la nueva estación a la sesión
+            session.add(vehicle)
+
+        # Confirmamos los cambios en la base de datos
+        session.commit()
+
+    
+# Leer el archivo CSV
+    with open(csv_area_path, mode='r') as archivo:
+        lector_csv = csv.DictReader(archivo)
+
+        for i, row in enumerate(lector_csv):
+            if i < 5:
+                continue
+
+            # Creamos una nueva instancia del modelo Area
+
+            total_area = row['Total Area'].replace(",", "")
+            area = Area(
+                state_name= row['State and other areas2'],
+                area = total_area
+            )
+
+            # Detener el bucle en la fila 'x'
+            if i == 56:  # Reemplaza 'x' con el número de la última fila que deseas leer
+                
+                break
+
+            # Agregamos la nueva estación a la sesión
+            session.add(area)
+
+        # Confirmamos los cambios en la base de datos
+        session.commit()
+
 
 else:
     print('Error: Failed to fetch data from API')
