@@ -23,7 +23,7 @@ class Station(Base):
     street_address = Column(String)
     intersection_directions = Column(String)
     city = Column(String)
-    state= Column(String, ForeignKey("state.abbreviation"))
+    state_ab = Column(String, ForeignKey("state.state_ab"))
     zip_code = Column(Integer)
     plus4 = Column(String)
     station_phone = Column(String)
@@ -100,15 +100,15 @@ class Station(Base):
 class State(Base):
     __tablename__ = 'state'
 
-    name = Column(String, primary_key= True, autoincrement=False)
-    abbreviation = Column(String)
+    state_name = Column(String, primary_key=True, autoincrement=False)
+    state_ab = Column(String)
     
 
 class Vehicle(Base):
     __tablename__ = 'vehicle'
 
     id = Column(Integer, primary_key= True)
-    state_name= Column(String, ForeignKey("state.name"))
+    state_name = Column(String, ForeignKey("state.state_name")) 
     state = relationship("State")
     electric = Column(Integer)
 
@@ -116,7 +116,7 @@ class Area(Base):
     __tablename__ = 'area'
 
     id = Column(Integer, primary_key= True)
-    state_name= Column(String, ForeignKey("state.name"))
+    state_name = Column(String, ForeignKey("state.state_name"))
     state = relationship("State")
     area = Column(Integer)
 
@@ -176,8 +176,8 @@ if response.status_code == 200:
 
         for row in states:
             state =State(
-                name = row['name'],
-                abbreviation = row['abbreviation']
+                state_name=row['name'],
+                state_ab=row['abbreviation']
             )
 
             # Agregamos la nueva estación a la sesión
@@ -197,7 +197,7 @@ if response.status_code == 200:
             street_address=row['Street Address'],
             intersection_directions=row['Intersection Directions'],
             city=row['City'],
-            state=row['State'],
+            state_ab=row['State'],
             zip_code=row['ZIP'],
             plus4=row['Plus4'],
             station_phone=row['Station Phone'],
