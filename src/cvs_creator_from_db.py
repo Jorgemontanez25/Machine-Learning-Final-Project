@@ -32,7 +32,7 @@ for table_name in tables:
     # Check if the table is 'station'
     if table_name == 'station':
         # Define raw SQL query to select the state and the count of stations grouped by state
-        query = text(f"SELECT state, COUNT(*) as number_of_stations FROM {table_name} GROUP BY state")
+        query = text(f"SELECT state_ab, COUNT(*) as number_of_stations FROM {table_name} GROUP BY state_ab")
     else:
         # Define raw SQL query to select all columns from the table
         query = text(f"SELECT * FROM {table_name}")
