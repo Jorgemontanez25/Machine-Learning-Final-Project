@@ -146,12 +146,30 @@ df = df.astype({'area': int, 'stations': int, 'vehicles': int})
 def show_inicio():
     st.subheader("Objetivo")
     st.markdown("<span style='font-size:20px;'>Este proyecto tiene como objetivo estimar la cantidad de estaciones de carga necesarias para vehículos eléctricos en base al área y la cantidad de vehículos registrados en cada estado.</span>", unsafe_allow_html=True)
-
+    st.markdown("<span style='font-size:20px;'>El enfoque es entrenar y desplegar un modelo predictivo utilizando datos del Laboratorio Nacional de Energía Renovable (en inglés: National Renewable Energy Laboratory, abreviado NREL) de EE.UU. y otras fuentes, para que pueda ser aplicado en cualquier parte del mundo donde este sector tecnológico esté en auge.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>A medida que más países adoptan vehículos eléctricos, es crucial planificar una infraestructura adecuada de estaciones de carga para satisfacer la demanda.</span>", unsafe_allow_html=True)
 
 def show_analisis():
-    #st.title("Análisis")
 
-    # Análisis Exploratorio de Datos (EDA)
+    st.subheader("Análisis Exploratorio de Datos (EDA)")
+    st.markdown("<span style='font-size:20px;'>- Descripción de los datos iniciales (70,830 filas, 74 columnas)</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Tratamiento de valores nulos y limpieza de datos</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Análisis de variables categóricas y numéricas</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Creación de la variable objetivo 'stations_number'</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Visualizaciones clave (histogramas, gráficos de barras, etc.)</span>", unsafe_allow_html=True)
+
+    st.subheader("Preparación de datos")
+    st.markdown("<span style='font-size:20px;'>- Codificación de variables categóricas</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Normalización de datos</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- División en conjuntos de entrenamiento y prueba</span>", unsafe_allow_html=True)
+
+    st.subheader("Modelado")
+    st.markdown("<span style='font-size:20px;'>- Selección del modelo (e.g. regresión lineal, árbol de decisión)</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Entrenamiento del modelo</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Evaluación del rendimiento (métricas relevantes)</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Optimización de hiperparámetros</span>", unsafe_allow_html=True)
+
+    # Estadísticas descriptivas
     st.subheader("Estadísticas descriptivas:")
     st.write(df.describe())
 
@@ -196,20 +214,42 @@ def show_modelo(model):
 
     # Despliegue del modelo
     st.subheader("Estimación de Estaciones de Carga")
-    area = st.number_input("Área del estado (kilómetros cuadrados)", min_value=0, value=0, label_visibility="visible", key="area_input")
-    vehicles = st.number_input("Cantidad de vehículos registrados", min_value=0, value=0, label_visibility="visible", key="vehicle_input")
+    area = st.number_input("Área (km²)", min_value=0, value=0, label_visibility="visible", key="area_input")
+    vehicles = st.number_input("Cantidad de vehículos", min_value=0, value=0, label_visibility="visible", key="vehicle_input")
 
     if st.button("Estimar Estaciones"):
         if area <= 0 or vehicles <= 0:
             st.error('Por favor, ingresa un valor mayor que cero.')
         else:
+            st.markdown("<span style='font-size:20px;'>Resultados del modelo:</span>", unsafe_allow_html=True)
             stations = model.predict([[area, vehicles]])[0]
-            st.markdown(f"<span style='font-size:20px'>La cantidad estimada de estaciones de carga para un área de <span style='color:orange;font-weight:bold;font-style:italic;font-size:26px'>{area}</span> kilómetros cuadrados y <span style='color:orange;font-weight:bold;font-style:italic;font-size:26px'>{vehicles}</span> vehículos registrados es de: </span>", unsafe_allow_html=True)
-            st.markdown(f"<span style='font-size:20px'><span style='color:green;font-weight:bold;font-size:24px'>{int(stations)} estaciones de carga</span></span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:20px'>La cantidad estimada de estaciones de carga para un área de <span style='color:blue;font-weight:bold;font-size:22px'>{area} km<sup>2</sup></span></span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:20px'>y <span style='color:blue;font-weight:bold;font-size:22px'>{vehicles} vehículos</span> es de: <span style='color:green;font-weight:bold;font-size:24px'>{int(stations)} estaciones de carga</span></span>", unsafe_allow_html=True)
+            st.markdown("<span style='font-size:20px;'>- Tipos de conectores recomendados (Nivel 1, Nivel 2, Carga rápida)</span>", unsafe_allow_html=True)
+
+            st.markdown("<span style='font-size:20px;'>Opciones adicionales:</span>", unsafe_allow_html=True)
+            st.markdown("<span style='font-size:20px;'>- Visualización de resultados en un mapa</span>", unsafe_allow_html=True)
+            st.markdown("<span style='font-size:20px;'>- Descarga de resultados en formato CSV</span>", unsafe_allow_html=True)
+
 def show_info_adicional():
-    st.title("Información Adicional")
-    st.write("Aquí puedes agregar más información, fotografías, artículos, etc.")
+    st.subheader("Información Adicional")
+    st.markdown("<span style='font-size:20px;'>Para mejorar el contenido de la aplicación, aquí se podrá agregar más información, fotografías, artículos, etc.", unsafe_allow_html=True)
     # Agrega tu contenido adicional aquí
+
+    st.subheader("Conceptos básicos de vehículos eléctricos")
+    st.markdown("<span style='font-size:20px;'>- Descripción general de la tecnología de vehículos eléctricos</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Beneficios ambientales y de eficiencia energética</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Desafíos actuales y futuros de la movilidad eléctrica</span>", unsafe_allow_html=True)
+
+    st.subheader("Tipos de estaciones de carga y conectores")
+    st.markdown("<span style='font-size:20px;'>- Estaciones de carga Nivel 1, Nivel 2 y Carga rápida (descripción y diferencias)</span>", unsafe_allow_html=True)
+    st.markdown("<span style='font-size:20px;'>- Tipos de conectores más comunes (J1772, CCS, CHAdeMO, etc.)</span>", unsafe_allow_html=True)
+
+    st.subheader("Políticas e incentivos gubernamentales")
+    st.markdown("<span style='font-size:20px;'>- Resumen de políticas y programas de incentivos para la adopción de vehículos eléctricos en diferentes países</span>", unsafe_allow_html=True)
+
+    st.subheader("Recursos adicionales")
+    st.markdown("<span style='font-size:20px;'>- Enlaces a sitios web, publicaciones y organizaciones relevantes para obtener más información</span>", unsafe_allow_html=True)
 
 def main():
     st.title('Estimación de Estaciones de Carga para Vehículos Eléctricos')
