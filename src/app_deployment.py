@@ -196,13 +196,16 @@ def show_modelo(model):
 
     # Despliegue del modelo
     st.subheader("Estimación de Estaciones de Carga")
-    area = st.number_input("Área del estado (kilómetros cuadrados)", value=200000, label_visibility="visible", key="area_input")
-    vehicles = st.number_input("Cantidad de vehículos registrados", value=50000, label_visibility="visible", key="vehicle_input")
+    area = st.number_input("Área del estado (kilómetros cuadrados)", min_value=0, value=0, label_visibility="visible", key="area_input")
+    vehicles = st.number_input("Cantidad de vehículos registrados", min_value=0, value=0, label_visibility="visible", key="vehicle_input")
 
     if st.button("Estimar Estaciones"):
-        stations = model.predict([[area, vehicles]])[0]
-        st.markdown(f"<span style='font-size:20px'>La cantidad estimada de estaciones de carga para un área de <span style='color:orange;font-weight:bold;font-style:italic;font-size:26px'>{area}</span> kilómetros cuadrados y <span style='color:orange;font-weight:bold;font-style:italic;font-size:26px'>{vehicles}</span> vehículos registrados es de: </span>", unsafe_allow_html=True)
-        st.markdown(f"<span style='font-size:20px'><span style='color:green;font-weight:bold;font-size:24px'>{int(stations)} estaciones de carga</span></span>", unsafe_allow_html=True)
+        if area <= 0 or vehicles <= 0:
+            st.error('Por favor, ingresa un valor mayor que cero.')
+        else:
+            stations = model.predict([[area, vehicles]])[0]
+            st.markdown(f"<span style='font-size:20px'>La cantidad estimada de estaciones de carga para un área de <span style='color:orange;font-weight:bold;font-style:italic;font-size:26px'>{area}</span> kilómetros cuadrados y <span style='color:orange;font-weight:bold;font-style:italic;font-size:26px'>{vehicles}</span> vehículos registrados es de: </span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:20px'><span style='color:green;font-weight:bold;font-size:24px'>{int(stations)} estaciones de carga</span></span>", unsafe_allow_html=True)
 def show_info_adicional():
     st.title("Información Adicional")
     st.write("Aquí puedes agregar más información, fotografías, artículos, etc.")
