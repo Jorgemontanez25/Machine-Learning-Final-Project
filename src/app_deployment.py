@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,6 +7,27 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error
+
+
+import base64
+
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+    st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url(data:image/{"png" if image_file.name.endswith(".png") else "jpg"};base64,{encoded_string.decode()});
+        background-size: cover;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+    )
+
+# Ejemplo de uso
+add_bg_from_local("src/assets/images/EV Charging Station 01.png")
 
 
 # Estilo CSS personalizado para los títulos de pestañas
@@ -45,20 +67,20 @@ estilo_css = """
 st.markdown(estilo_css, unsafe_allow_html=True)
 
 
-def set_bg_color(color):
-    color_code = f"background-color: {color};"
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            {color_code}
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# def set_bg_color(color):
+#     color_code = f"background-color: {color};"
+#     st.markdown(
+#         f"""
+#         <style>
+#         .stApp {{
+#             {color_code}
+#         }}
+#         </style>
+#         """,
+#         unsafe_allow_html=True
+#     )
 
-set_bg_color("#00012e")  # Reemplaza "#F0F0F0" con el código de color deseado
+# set_bg_color("#00012e")  # Reemplaza "#F0F0F0" con el código de color deseado
 
 
 
