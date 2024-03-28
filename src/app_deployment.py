@@ -27,7 +27,7 @@ def add_bg_from_local(image_file):
     )
 
 # Ejemplo de uso
-add_bg_from_local("src/assets/images/EV Charging Station 01.png")
+add_bg_from_local("src/assets/images/EV Charging Station 00.png")
 
 
 # Estilo CSS personalizado para los títulos de pestañas
