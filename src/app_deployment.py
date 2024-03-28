@@ -11,6 +11,12 @@ from sklearn.metrics import r2_score, mean_absolute_error
 
 import base64
 
+# Obtener la ruta de la carpeta 'src'
+src_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construir la ruta completa al archivo de la base de datos
+db_path = os.path.join(src_dir, 'assets/images/EV Charging Station 00.png')
+
 def add_bg_from_local(image_file):
     with open(image_file, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
@@ -27,7 +33,7 @@ def add_bg_from_local(image_file):
     )
 
 # Ejemplo de uso
-add_bg_from_local("src/assets/images/EV Charging Station 00.png")
+add_bg_from_local("/workspaces/Machine-Learning-Final-Project/src/assets/images/EV Charging Station 00.png")
 
 
 # Estilo CSS personalizado para los títulos de pestañas
