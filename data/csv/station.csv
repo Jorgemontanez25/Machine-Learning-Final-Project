@@ -1,4 +1,4 @@
-state_ab,Total_EV_Level1_EVSE_Num,Total_EV_Level2_EVSE_Num,Total_EV_DC_Fast_Count,stations_number
+state_ab,Total_EV_Level1_EVSE_Num,Total_EV_Level2_EVSE_Num,Total_EV_DC_FastCount,stations_number
 AK,3,91,36,67
 AL,35,744,395,466
 AR,3,724,134,341
