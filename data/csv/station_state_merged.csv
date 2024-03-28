@@ -1,0 +1,53 @@
+state_ab,Total_EV_Level1_EVSE_Num,Total_EV_Level2_EVSE_Num,Total_EV_DC_FastCount,stations_number,state_name
+AK,3,91,36,67,Alaska
+AL,35,744,395,466,Alabama
+AR,3,724,134,341,Arkansas
+AZ,10,2672,1063,1318,Arizona
+CA,668,41181,11431,17878,California
+CO,80,4810,1034,2399,Colorado
+CT,64,2317,457,1004,Connecticut
+DC,25,1259,65,437,District Of Columbia
+DE,5,372,214,232,Delaware
+FL,365,7837,2433,3723,Florida
+GA,230,4291,1206,2225,Georgia
+HI,26,839,98,422,Hawaii
+IA,5,583,330,399,Iowa
+ID,6,389,154,223,Idaho
+IL,53,2621,1066,1427,Illinois
+IN,8,1099,562,620,Indiana
+KS,14,1016,231,586,Kansas
+KY,24,609,222,328,Kentucky
+LA,23,493,251,293,Louisiana
+MA,53,7168,780,3293,Massachusetts
+MD,40,4397,1020,1916,Maryland
+ME,22,881,241,511,Maine
+MI,14,2842,752,1559,Michigan
+MN,74,1566,485,835,Minnesota
+MO,15,2423,485,1347,Missouri
+MS,139,307,120,173,Mississippi
+MT,3,193,193,133,Montana
+NC,43,3403,1120,1733,North Carolina
+ND,0,124,89,101,North Dakota
+NE,2,419,161,273,Nebraska
+NH,5,436,183,277,New Hampshire
+NJ,16,3000,1078,1447,New Jersey
+NM,10,485,254,318,New Mexico
+NV,15,1451,755,647,Nevada
+NY,36,10729,1459,4335,New York
+OH,41,3053,863,1713,Ohio
+OK,8,557,871,386,Oklahoma
+OR,74,2570,845,1378,Oregon
+PA,49,3600,1093,1906,Pennsylvania
+PR,0,32,0,17,Puerto Rico
+RI,82,790,91,366,Rhode Island
+SC,15,1028,515,634,South Carolina
+SD,2,130,116,104,South Dakota
+TN,34,1794,542,992,Tennessee
+TX,123,7041,2749,3591,Texas
+UT,15,1978,386,969,Utah
+VA,219,3637,1213,1735,Virginia
+VT,22,890,138,415,Vermont
+WA,165,5032,1253,2499,Washington
+WI,7,1071,449,646,Wisconsin
+WV,19,299,155,166,West Virginia
+WY,3,145,117,114,Wyoming
