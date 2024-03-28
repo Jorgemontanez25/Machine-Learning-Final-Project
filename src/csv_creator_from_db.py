@@ -14,43 +14,43 @@ metadata = MetaData()
 # Reflect database tables
 metadata.reflect(bind=engine)
 
-# Extract tables from metadata
-tables = metadata.tables.keys()
-
 # Create CSV directory if it doesn't exist
 csv_dir = '/workspaces/Machine-Learning-Final-Project/data/csv'
 os.makedirs(csv_dir, exist_ok=True)
 
-# Loop through tables and create CSV files
-for table_name in tables:
-    # Load table
-    table = Table(table_name, metadata, autoload=True, autoload_with=engine)
-    
-    # Create connection
-    conn = engine.connect()
-    
-    # Check if the table is 'station'
-    if table_name == 'station':
-        # Define raw SQL query to select the state and the count of stations grouped by state
-        query = text(f"SELECT state_ab, COUNT(*) as number_of_stations FROM {table_name} GROUP BY state_ab")
-    else:
-        # Define raw SQL query to select all columns from the table
-        query = text(f"SELECT * FROM {table_name}")
-    
-    result = conn.execute(query)
-    
-    # Fetch all rows into a DataFrame
-    df = pd.DataFrame(result.fetchall(), columns=result.keys())
-    
-    # Define CSV file path
-    csv_file_path = os.path.join(csv_dir, f'{table_name}.csv')
-    
-    # Write DataFrame to CSV
-    df.to_csv(csv_file_path, index=False)
-    
-    print(f'CSV file created for table {table_name} at: {csv_file_path}')
-    
-    # Close connection
-    conn.close()
+# Load the 'station' table
+station_table = Table('station', metadata, autoload=True, autoload_with=engine)
 
-print("CSV files created successfully!")
+# Create a connection
+conn = engine.connect()
+
+# Define SQL query to group station data by state and calculate aggregated values
+query = text("""
+    SELECT 
+        state_ab, 
+        IFNULL(SUM(CAST("ev_level1_evse_num" AS INT)), 0) as "Total_EV_Level1_EVSE_Num", 
+        IFNULL(SUM(CAST("ev_level2_evse_num" AS INT)), 0) as "Total_EV_Level2_EVSE_Num", 
+        IFNULL(SUM(CAST("ev_dc_fast_count" AS INT)), 0) as "Total_EV_DC_Fast_Count", 
+                COUNT(DISTINCT(id)) as "stations_number"
+    FROM 
+        station 
+    GROUP BY 
+        state_ab
+""")
+
+# Execute the query
+result = conn.execute(query)
+
+# Fetch the results into a DataFrame
+station_df = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+# Define CSV file path for the station data
+station_csv_path = os.path.join(csv_dir, 'station.csv')
+
+# Write the station data to a CSV file
+station_df.to_csv(station_csv_path, index=False)
+
+# Close the connection
+conn.close()
+
+print(f'Station data CSV file created at: {station_csv_path}')
